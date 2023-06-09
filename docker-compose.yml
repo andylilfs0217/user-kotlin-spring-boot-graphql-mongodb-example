@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  backend:
+    platform: linux/amd64
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: 'mongo:latest'
+    restart: always
+    ports:
+      - '27017:27017'
