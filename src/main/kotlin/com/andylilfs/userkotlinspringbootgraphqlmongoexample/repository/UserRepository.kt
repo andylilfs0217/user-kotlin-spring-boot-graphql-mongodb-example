@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface UserRepository : MongoRepository<AppUser, UUID> {
+interface UserRepository : MongoRepository<AppUser, Long> {
   fun findByEmail(email: String): AppUser?
   fun findByUsername(username: String): AppUser?
 }

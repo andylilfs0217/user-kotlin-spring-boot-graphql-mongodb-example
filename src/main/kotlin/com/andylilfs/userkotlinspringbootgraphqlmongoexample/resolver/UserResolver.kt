@@ -11,13 +11,15 @@ import java.util.*
 @Controller
 class UserResolver(private val userRepository: UserRepository) {
 
+  val random = Random()
+
   @QueryMapping
   fun getUsers(): List<AppUser> {
     return userRepository.findAll()
   }
 
   @QueryMapping
-  fun getUser(@Argument id: UUID): Optional<AppUser> {
+  fun getUser(@Argument id: Long): Optional<AppUser> {
     return userRepository.findById(id)
   }
 
@@ -29,14 +31,15 @@ class UserResolver(private val userRepository: UserRepository) {
     @Argument username: String,
     @Argument password: String
   ): AppUser? {
+    val id = random.nextLong(Long.MAX_VALUE)
     val newUser =
-      AppUser(firstName = firstName, lastName = lastName, email = email, username = username, password = password)
+      AppUser(id = id, firstName = firstName, lastName = lastName, email = email, username = username, password = password)
     return userRepository.save(newUser)
   }
 
   @MutationMapping
   fun updateUser(
-    @Argument id: UUID, @Argument firstName: String?, @Argument lastName: String?, @Argument password: String?
+    @Argument id: Long, @Argument firstName: String?, @Argument lastName: String?, @Argument password: String?
   ): AppUser? {
     val user = userRepository.findById(id).orElse(null) ?: return null
 
@@ -48,7 +51,7 @@ class UserResolver(private val userRepository: UserRepository) {
   }
 
   @MutationMapping
-  fun deleteUser(@Argument id: UUID): Unit {
+  fun deleteUser(@Argument id: Long): Unit {
     return userRepository.deleteById(id)
   }
 
@@ -75,7 +78,3 @@ class UserResolver(private val userRepository: UserRepository) {
     return true
   }
 }
-
-data class UserDto(
-  val id: UUID, val firstName: String?, val lastName: String?
-)
